@@ -1,4 +1,4 @@
-FROM debian:buster-slim
+FROM debian:stretch-slim
 
 LABEL maintainer="contact@ocsinventory-ng.org"
 LABEL version="2.6"
@@ -47,6 +47,7 @@ RUN apt-get update ; \
     nano \
     wget \
     tar \
+    python3-pip \
     make ;\
     cpan -i XML::Entities ;\
     /usr/sbin/a2dissite 000-default ;\
@@ -59,7 +60,10 @@ RUN apt-get update ; \
 ENV TZ	"Europe/Paris"
 
 WORKDIR /tmp/ocs/Apache
-RUN perl Makefile.PL ;\
+RUN pip3 install setuptools ;\
+    pip3 install wheel ;\
+    pip3 install scp ;\
+    perl Makefile.PL ;\
     make ;\
     make install ;\
     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone ;\
